@@ -4,6 +4,8 @@
 // Main function allows user to choose between hosting and joining a chat
 int main() {
     std::string port;
+    io_context io_ctx;
+    ssl::context ssl_ctx( ssl::context::tlsv12 );
     std::cout << "Enter port number: ";
     std::cin >> port;
     std::cin.ignore();
@@ -13,7 +15,7 @@ int main() {
     std::cin >> choice;
     std::cin.ignore();
 
-    Peer peer(port);
+    Peer peer(port, io_ctx, ssl_ctx);
 
     if (choice == 1) {
         peer.startConnection(); // Start as host
