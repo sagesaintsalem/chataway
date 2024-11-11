@@ -10,6 +10,11 @@ int main() {
     std::cin >> port;
     std::cin.ignore();
 
+    std::string host_ip;
+    std::cout << "Enter host IP address: ";
+    std::cin >> host_ip;
+    std::cin.ignore();
+
     int choice;
     std::cout << "Welcome to Chataway! Select:\n1. Host chat\n2. Join chat\n";
     std::cin >> choice;
@@ -18,13 +23,10 @@ int main() {
     Peer peer(port, io_ctx, ssl_ctx);
 
     if (choice == 1) {
-        peer.startConnection(); // Start as host
+        peer.startConnection(host_ip); // Start as host
     }
     else if (choice == 2) {
-        std::string host_ip;
-        std::cout << "Enter host IP address: ";
-        std::cin >> host_ip;
-        std::cin.ignore();
+        
         peer.connectToSender(host_ip); // Connect to host as client
     }
     else {

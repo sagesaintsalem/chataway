@@ -5,6 +5,7 @@ using std::cin;
 using std::endl;
 #include <thread>
 #include <string>
+#include <chrono>
 using std::string;
 #include <boost\asio.hpp>
 using boost::asio::ip::tcp;
