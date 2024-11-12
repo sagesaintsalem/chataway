@@ -2,13 +2,13 @@
 #include "allheader.h"
 
 // Peer class handles the functionality of the host and client for P2P communication
-class Peer {
+class Peer : public std::enable_shared_from_this<Peer> {
 public:
-    Peer(string port);
+    Peer(string port,io_context& io_ctx, ssl::context& ssl_ctx);
 
-    void startConnection();  // Host
+    void startConnection(const string& host_ip);  // Host
     void connectToSender(const string& host_ip);  // Client
-    void sendMessage();
+    void sendMessage(string message);
     void readMessage();
 
 private:
@@ -18,7 +18,7 @@ private:
     //tcp::socket socket{ io_ctx };
     tcp::resolver resolver{io_ctx};
     streambuf buffer;
-    ssl::context ssl_ctx{ ssl::context::tlsv12 };
+    ssl::context ssl_ctx;
     ssl::stream<ip::tcp::socket>ssl_sock{ io_ctx, ssl_ctx };
 
 };
