@@ -45,7 +45,7 @@ void Peer::startConnection(const string& host_ip) {  // Host function
 
 // This connects to an existing P2P chat as a client
 void Peer::connectToSender(const std::string& host_ip) {  // Client function
-    ssl_ctx.set_default_verify_paths();
+    ssl_ctx.set_default_verify_paths(); //Lines 48 and 49 refer to the SSL context and certificates that I tried to implement. App will run with/without these lines.
     runSSL(ssl_ctx);
 
     cout << "Enter your name: ";
@@ -56,11 +56,11 @@ void Peer::connectToSender(const std::string& host_ip) {  // Client function
     cout << "Connected to host at " << host_ip << " on port " << port << ". Performing handshake...\n";
 
     char handshake[11];
-    boost::asio::read(socket, boost::asio::buffer(handshake, 11));
+    boost::asio::read(socket, boost::asio::buffer(handshake, 11)); // Reads the socket for the word "HANDSHAKE"
 
-    if (string(handshake) == "HANDSHAKE\0") {
+    if (string(handshake) == "HANDSHAKE\0") { // If "HANDSHAKE" is found, the next step of the handshake can continue.
         cout << "Handshake received from host. Sending confirmation...\n";
-        boost::asio::write(socket, boost::asio::buffer("HANDSHAKE\0"));
+        boost::asio::write(socket, boost::asio::buffer("HANDSHAKE\0")); // Writes the word "HANDSHAKE" to the socket for the server peer to read
         cout << "Handshake successful! Start chatting...\n";
     }
 
