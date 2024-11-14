@@ -21,6 +21,9 @@
     <ClCompile Include="Peer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Connections.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="allheader.h">
@@ -32,5 +35,13 @@
     <ClInclude Include="SSLConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Connections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="domain.crt" />
+    <None Include="domain.pem" />
+    <None Include="rootCA.crt" />
   </ItemGroup>
 </Project>

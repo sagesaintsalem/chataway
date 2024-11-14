@@ -128,12 +128,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="chataway.cpp" />
+    <ClCompile Include="Connections.cpp" />
     <ClCompile Include="Peer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="allheader.h" />
+    <ClInclude Include="Connections.h" />
     <ClInclude Include="Peer.h" />
     <ClInclude Include="SSLConfig.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="domain.crt" />
+    <None Include="domain.pem" />
+    <None Include="rootCA.crt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

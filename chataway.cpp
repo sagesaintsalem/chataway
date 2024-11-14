@@ -1,17 +1,18 @@
 #include "Peer.h"
 #include "SSLConfig.h"
+#include "Connections.h"
 
 void createPeer(string name, string peer_ip, string port, int hostOrClient) {
 	io_context io_ctx;
 	ssl::context ssl_ctx(ssl::context::tlsv12);
-   /* runSSL(ssl_ctx);*/
+    runSSL(ssl_ctx);
 	if (hostOrClient == 1) {
-		Peer host(port, peer_ip, io_ctx, ssl_ctx, name);
-		host.startConnection(port, name, peer_ip);
+		//Peer host(port, peer_ip, io_ctx, ssl_ctx, name);
+		startConnection(port, name, peer_ip, io_ctx, ssl_ctx);
 	}
 	else if (hostOrClient == 2) {
-		Peer client(port, peer_ip, io_ctx, ssl_ctx, name);
-		client.connectToSender(port, name, peer_ip);
+		//Peer client(port, peer_ip, io_ctx, ssl_ctx, name);
+		connectToSender(port, name, peer_ip, io_ctx, ssl_ctx);
 	}
 }
 
@@ -32,7 +33,6 @@ int main() {
     std::cin.ignore();
 
     string name;
-
     cout << "Please enter your name: ";
     cin >> name;
     cin.ignore();

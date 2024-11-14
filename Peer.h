@@ -6,8 +6,8 @@ class Peer : public std::enable_shared_from_this<Peer> {
 public:
     Peer(string port, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx,string& name);
 
-    void startConnection(string& port, string& name, string& peer_ip);  // Host
-    void connectToSender(string& port, string& name, string& peer_ip);  // Client
+    //void startConnection(string& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx);  // Host
+    //void connectToSender(string& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx);  // Client
     /*void sendMessage();
     void readMessage();*/
     
