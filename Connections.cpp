@@ -7,11 +7,9 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
 
     tcp::acceptor acceptor(io_ctx, tcp::endpoint(ip::make_address(peer_ip), port));
    
-    cout << "Hi " << name << "! Waiting for peer on port " << port << "...\n";
-
+    cout << "Waiting for peer on port " << port << "...\n";
 
     // Accepts connection from client, returns error message if unsuccessful
-    cout << "Running acceptor..." << endl;
     acceptor.async_accept(host->ssl_sock().lowest_layer(), [&host](const boost::system::error_code& error) {
         try {
             if (error) {
@@ -19,9 +17,8 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
 
             }
             else {
-                cout << "Attempting handshake...\n";
                 host->handleHandshake(boost::asio::ssl::stream_base::handshake_type::server);
-                cout << "Peer connected! Start chatting...\n";
+                cout << "Peer connected! Chat away!\n";
 
             }
         }
@@ -31,7 +28,6 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
         });
 
 
-    cout << "Running context..." << endl;
     std::thread io_thread([&io_ctx]() {
         try {
             // Run the IO context
@@ -42,15 +38,19 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
         }
         });
     cout << "Waiting for peer..." << endl;
-    //std::this_thread::sleep_for(std::chrono::seconds(20));
 
     while (true) {
         try {
             string message;
             // Read the message from the user
-            std::getline(cin, message);
+            getline(cin, message);
             // Exit the chat if the user types 'exit'
-            if (message == "exit") break;
+            if (message == "LEAVE_CHAT") {
+                cout << "Thank you for using Chataway! Exiting...";
+                io_ctx.stop();
+                io_thread.join();
+                break;
+            }
             // Send the message if it is not empty
             if (!message.empty()) host->sendMessage(message);
         }
@@ -69,9 +69,9 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
     // Connects to the server, returns an error message if unsuccessful
     try {
         client->ssl_sock().lowest_layer().connect(tcp::endpoint(ip::make_address(peer_ip), port));
-        cout << "Connected! \n";
-        cout << "Attempting handshake...\n";
         client->handleHandshake(boost::asio::ssl::stream_base::handshake_type::client);
+        cout << "Connected to host! Chat away! \n";
+
     }
     catch (const std::exception& error) {
         std::cerr << "Connect failed: " << error.what() << endl;
@@ -87,15 +87,19 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
             cout << "Exception in IO Client thread: " << e.what() << endl;
         }
         });
-    //std::this_thread::sleep_for(std::chrono::seconds(2));
-
+  
     while (true) {
         try {
             string message;
             // Read the message from the user
-            std::getline(cin, message);
+            getline(cin, message);
             // Exit the chat if the user types 'exit'
-            if (message == "exit") break;
+            if (message == "LEAVE_CHAT") {
+                cout << "Thank you for using Chataway! Exiting...";
+                io_ctx.stop();
+                io_thread.join();
+                break;
+            }
             // Send the message if it is not empty
             if (!message.empty()) client->sendMessage(message);
         }
@@ -103,8 +107,4 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
             cout << "Error sending message: " << e.what() << endl;
         }
     }
-   
-
-	
 }
-

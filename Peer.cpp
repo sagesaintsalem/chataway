@@ -7,23 +7,11 @@ boost::asio::ssl::stream<boost::asio::ip::tcp::socket>& Peer::ssl_sock() {
     return ssl_socket;
 }
 
-std::mutex cout_mutex;
-//void Peer::startConnection(string& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
-//	cout << "Host: " << name << ", on port " << port << ", address: " << peer_ip ;
-//}
-//
-//void Peer::connectToSender(string& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
-//	cout << "Client: " << name << ", on port " << port << ", address: " << peer_ip;
-//	
-//	
-//}
+
 void Peer::handleHandshake(boost::asio::ssl::stream_base::handshake_type htype) {
-    cout << "Extending hand..." << endl;
         ssl_socket.async_handshake(htype, [self = shared_from_this()](const boost::system::error_code error) {
             try {
                 if (!error) {
-                    cout << "Hands shaken!\n";
-                    cout << "Let's try reading!\n";
                     self->readMessage();
                 }
                 else {
@@ -47,9 +35,13 @@ void Peer::readMessage() {
                 std::istream stream(&self->buffer);
                 std::string message;
                 std::getline(stream, message);
-                std::cout << "Received message: " << message << endl;
+                std::cout << message << endl;
                 self->buffer.consume(len);
                 self->readMessage();
+            }
+            else if (error.message() == "An existing connection was forcibly closed by the remote host") {
+                cout << "Connection closed by peer! Thank you for using Chataway!\n Exiting...";
+                exit(EXIT_SUCCESS);
             }
             else {
                 cout << "Readstream failed: " << error.message() << endl;
@@ -70,9 +62,6 @@ void Peer::sendMessage(const string& message) {
         boost::asio::async_write(ssl_socket, boost::asio::buffer(*send_msg), [send_msg, this](boost::system::error_code error, std::size_t) {
             if (error) {
                 cout << "Halp! Message not sended!" << error.message() << endl;
-            }
-            else {
-                cout << *send_msg << endl;
             }
             });
 
