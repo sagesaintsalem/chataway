@@ -22,7 +22,7 @@ int main() {
     cin >> hostOrClient;
     cin.ignore();
 
-    int port;
+    /*int port;
     cout << "Enter port number: ";
     cin >> port;
     cin.ignore();
@@ -30,7 +30,13 @@ int main() {
     string peer_ip;
     cout << "Enter host IP address: ";
     cin >> peer_ip;
-    cin.ignore();
+    cin.ignore();*/
+
+    int port = 1337;
+    string peer_ip = "127.0.0.1";
+
+    cout << "Enter port number: " << port << endl;
+    cout << "Enter IP address: " << peer_ip << endl;
 
     string name;
     cout << "Please enter your name: ";

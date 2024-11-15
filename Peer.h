@@ -10,9 +10,10 @@ public:
 
     //void startConnection(string& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx);  // Host
     //void connectToSender(string& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx);  // Client
-    void sendMessage();
+    void sendMessage(const string& message);
     void readMessage();
-    
+    void handleHandshake(boost::asio::ssl::stream_base::handshake_type htype);
+
 
 private:
     int port; // Port number for connection

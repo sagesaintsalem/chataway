@@ -2,7 +2,6 @@
 #include "Peer.h"
 
 void startConnection(int& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
-	//cout << "Host: " << name << ", on port " << port << ", address: " << peer_ip ;
 
 	auto host = std::make_shared<Peer>(port, peer_ip, io_ctx, ssl_ctx, name);
 
@@ -17,27 +16,52 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
         try {
             if (error) {
                 std::cerr << "Connection failed: " << error.message() << endl;
-                //If handshake doesn't work, error message shows on screen
+
             }
             else {
-
+                cout << "Attempting handshake...\n";
+                host->handleHandshake(boost::asio::ssl::stream_base::handshake_type::server);
                 cout << "Peer connected! Start chatting...\n";
 
             }
         }
         catch (std::exception e) {
-            cout << e.what() << endl;
+            cout << "Acceptor error: " << e.what() << endl;
         }
         });
 
 
-    cout << "Attempting handshake...\n";
+    cout << "Running context..." << endl;
+    std::thread io_thread([&io_ctx]() {
+        try {
+            // Run the IO context
+            io_ctx.run();
+        }
+        catch (const std::exception& e) {
+            cout << "Exception in IO Host thread: " << e.what() << endl;
+        }
+        });
+    cout << "Waiting for peer..." << endl;
+    //std::this_thread::sleep_for(std::chrono::seconds(20));
+
+    while (true) {
+        try {
+            string message;
+            // Read the message from the user
+            std::getline(cin, message);
+            // Exit the chat if the user types 'exit'
+            if (message == "exit") break;
+            // Send the message if it is not empty
+            if (!message.empty()) host->sendMessage(message);
+        }
+        catch (const std::exception& e) {
+            cout << "Error sending message: " << e.what() << endl;
+        }
+    }
 
 }
 
 void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
-	//cout << "Client: " << name << ", on port " << port << ", address: " << peer_ip;
-	
 	auto client = std::make_shared<Peer>(port, peer_ip, io_ctx, ssl_ctx, name);
 
     cout << "Connecting...\n";
@@ -46,15 +70,41 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
     try {
         client->ssl_sock().lowest_layer().connect(tcp::endpoint(ip::make_address(peer_ip), port));
         cout << "Connected! \n";
-
+        cout << "Attempting handshake...\n";
+        client->handleHandshake(boost::asio::ssl::stream_base::handshake_type::client);
     }
     catch (const std::exception& error) {
         std::cerr << "Connect failed: " << error.what() << endl;
 
     }
 
+    std::thread io_thread([&io_ctx]() {
+        try {
+            // Run the IO context
+            io_ctx.run();
+        }
+        catch (const std::exception& e) {
+            cout << "Exception in IO Client thread: " << e.what() << endl;
+        }
+        });
+    //std::this_thread::sleep_for(std::chrono::seconds(2));
 
-    cout << "Attempting handshake...\n";
+    while (true) {
+        try {
+            string message;
+            // Read the message from the user
+            std::getline(cin, message);
+            // Exit the chat if the user types 'exit'
+            if (message == "exit") break;
+            // Send the message if it is not empty
+            if (!message.empty()) client->sendMessage(message);
+        }
+        catch (const std::exception& e) {
+            cout << "Error sending message: " << e.what() << endl;
+        }
+    }
+   
 
 	
 }
+

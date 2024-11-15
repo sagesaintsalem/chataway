@@ -40,8 +40,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="domain.crt" />
-    <None Include="domain.pem" />
-    <None Include="rootCA.crt" />
+    <CopyFileToFolders Include="domain.crt" />
+    <CopyFileToFolders Include="domain.pem" />
+    <CopyFileToFolders Include="rootCA.crt" />
   </ItemGroup>
 </Project>
