@@ -2,7 +2,7 @@
 #include "SSLConfig.h"
 #include "Connections.h"
 
-void createPeer(string name, string peer_ip, string port, int hostOrClient) {
+void createPeer(string name, string peer_ip, int port, int hostOrClient) {
 	io_context io_ctx;
 	ssl::context ssl_ctx(ssl::context::tlsv12);
     runSSL(ssl_ctx);
@@ -18,19 +18,19 @@ void createPeer(string name, string peer_ip, string port, int hostOrClient) {
 
 int main() {
     int hostOrClient;
-    std::cout << "Welcome to Chataway! Select:\n1. Host chat\n2. Join chat\n";
-    std::cin >> hostOrClient;
-    std::cin.ignore();
+    cout << "Welcome to Chataway! Select:\n1. Host chat\n2. Join chat\n";
+    cin >> hostOrClient;
+    cin.ignore();
 
-    std::string port;
-    std::cout << "Enter port number: ";
-    std::cin >> port;
-    std::cin.ignore();
+    int port;
+    cout << "Enter port number: ";
+    cin >> port;
+    cin.ignore();
 
-    std::string peer_ip;
-    std::cout << "Enter host IP address: ";
-    std::cin >> peer_ip;
-    std::cin.ignore();
+    string peer_ip;
+    cout << "Enter host IP address: ";
+    cin >> peer_ip;
+    cin.ignore();
 
     string name;
     cout << "Please enter your name: ";
