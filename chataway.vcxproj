@@ -102,7 +102,6 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -129,11 +128,13 @@
   <ItemGroup>
     <ClCompile Include="chataway.cpp" />
     <ClCompile Include="Connections.cpp" />
+    <ClCompile Include="Cosmetics.cpp" />
     <ClCompile Include="Peer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="allheader.h" />
     <ClInclude Include="Connections.h" />
+    <ClInclude Include="Cosmetics.h" />
     <ClInclude Include="Peer.h" />
     <ClInclude Include="SSLConfig.h" />
   </ItemGroup>
