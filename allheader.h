@@ -13,3 +13,6 @@ using namespace boost::asio;
 #include <boost/asio/ssl.hpp>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <chrono>
+#include <ctime>
+#include <Windows.h>

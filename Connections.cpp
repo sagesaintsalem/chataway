@@ -1,5 +1,6 @@
 #include "Connections.h"
 #include "Peer.h"
+#include "Cosmetics.h"
 
 void startConnection(int& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
 
@@ -44,15 +45,18 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
             string message;
             // Read the message from the user
             getline(cin, message);
-            // Exit the chat if the user types 'exit'
+            // Exit the chat if the user types 'LEAVE_CHAT'
             if (message == "LEAVE_CHAT") {
-                cout << "Thank you for using Chataway! Exiting...";
+                cout << "Thank you for using Chataway!\n\nExiting...";
                 io_ctx.stop();
                 io_thread.join();
                 break;
             }
             // Send the message if it is not empty
-            if (!message.empty()) host->sendMessage(message);
+            if (!message.empty()) {
+                host->sendMessage(message);
+            };
+
         }
         catch (const std::exception& e) {
             cout << "Error sending message: " << e.what() << endl;
@@ -93,15 +97,18 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
             string message;
             // Read the message from the user
             getline(cin, message);
-            // Exit the chat if the user types 'exit'
+            // Exit the chat if the user types 'LEAVE_CHAT'
             if (message == "LEAVE_CHAT") {
-                cout << "Thank you for using Chataway! Exiting...";
+                cout << "Thank you for using Chataway!\n\nExiting...";
                 io_ctx.stop();
                 io_thread.join();
                 break;
             }
             // Send the message if it is not empty
-            if (!message.empty()) client->sendMessage(message);
+            if (!message.empty()) {
+                client->sendMessage(message);
+            };
+            
         }
         catch (const std::exception& e) {
             cout << "Error sending message: " << e.what() << endl;

@@ -30,17 +30,17 @@ void Peer::handleHandshake(boost::asio::ssl::stream_base::handshake_type htype) 
 
 void Peer::readMessage() {
     try {
-        boost::asio::async_read_until(ssl_socket, buffer, "\n", [self = shared_from_this()](boost::system::error_code error, std::size_t len) {
+        boost::asio::async_read_until(ssl_socket, buffer, "\0", [self = shared_from_this()](boost::system::error_code error, std::size_t len) {
             if (!error) {
                 std::istream stream(&self->buffer);
                 std::string message;
                 std::getline(stream, message);
                 std::cout << message << endl;
                 self->buffer.consume(len);
-                self->readMessage();
+                self->readMessage(); 
             }
             else if (error.message() == "An existing connection was forcibly closed by the remote host") {
-                cout << "Connection closed by peer! Thank you for using Chataway!\n Exiting...";
+                cout << "Connection closed by peer! Thank you for using Chataway!\n\nExiting...";
                 exit(EXIT_SUCCESS);
             }
             else {
@@ -58,8 +58,31 @@ void Peer::readMessage() {
 
 void Peer::sendMessage(const string& message) {
     try {
-        auto send_msg = std::make_shared<string>(name + ": " + message + "\n");  // Format message with username
-        boost::asio::async_write(ssl_socket, boost::asio::buffer(*send_msg), [send_msg, this](boost::system::error_code error, std::size_t) {
+        time_t timestamp;
+        char output[50];
+        struct tm datetime;
+
+        // Get the current time
+        time(&timestamp);
+
+        // Use localtime_s to get the local time in a thread-safe way
+        localtime_s(&datetime, &timestamp);
+
+        // Format the time as a string
+        strftime(output, sizeof(output), "%D %R", &datetime);
+
+        // Convert to a C++ string
+        auto stringtime = std::string(output);
+        
+        //auto send_deets = std::make_shared<string>("||" + stringtime + "|| " + name + ": \n");  // Format message with username
+        //
+
+        //auto send_msg = std::make_shared<string>(message + "\n");
+       
+        string fullMessage = "||" + stringtime + "|| " + name + ": \n" + message + "\n\n\0";
+
+        auto fullMsgP = std::make_shared<string>(fullMessage);
+        boost::asio::async_write(ssl_socket, boost::asio::buffer(*fullMsgP), [fullMsgP, this](boost::system::error_code error, std::size_t) {
             if (error) {
                 cout << "Halp! Message not sended!" << error.message() << endl;
             }
