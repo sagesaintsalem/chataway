@@ -1,6 +1,5 @@
 #include "Connections.h"
 #include "Peer.h"
-#include "Cosmetics.h"
 
 void startConnection(int& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
 
@@ -55,6 +54,8 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
             // Send the message if it is not empty
             if (!message.empty()) {
                 host->sendMessage(message);
+                cout << "\n";
+
             };
 
         }
@@ -107,6 +108,8 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
             // Send the message if it is not empty
             if (!message.empty()) {
                 client->sendMessage(message);
+                cout << "\n";
+
             };
             
         }

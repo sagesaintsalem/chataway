@@ -1,7 +1,6 @@
 #include "Peer.h"
 #include "SSLConfig.h"
 #include "Connections.h"
-#include "Cosmetics.h"
 
 
 
@@ -22,9 +21,6 @@ void createPeer(string name, string peer_ip, int port, int hostOrClient) {
 
 
 int main() {
-    setconsolecolor(2, 0);
-    
-
 
 
     cout << "Welcome to Chataway!\n";

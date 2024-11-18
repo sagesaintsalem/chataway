@@ -20,4 +20,5 @@ private:
     string name; // User's handle or name
     streambuf buffer;
     boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket;
+
 };

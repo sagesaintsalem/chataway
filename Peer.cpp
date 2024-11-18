@@ -13,6 +13,7 @@ void Peer::handleHandshake(boost::asio::ssl::stream_base::handshake_type htype) 
             try {
                 if (!error) {
                     self->readMessage();
+
                 }
                 else {
                     cout << "Handshake failed :(  Error: " << error.message() << endl;
@@ -35,7 +36,7 @@ void Peer::readMessage() {
                 std::istream stream(&self->buffer);
                 std::string message;
                 std::getline(stream, message);
-                std::cout << message << endl;
+                std::cout << message << "\n";
                 self->buffer.consume(len);
                 self->readMessage(); 
             }
@@ -73,14 +74,11 @@ void Peer::sendMessage(const string& message) {
 
         // Convert to a C++ string
         auto stringtime = std::string(output);
-        
-        //auto send_deets = std::make_shared<string>("||" + stringtime + "|| " + name + ": \n");  // Format message with username
-        //
 
-        //auto send_msg = std::make_shared<string>(message + "\n");
-       
+        // Create the full message
         string fullMessage = "||" + stringtime + "|| " + name + ": \n" + message + "\n\n\0";
 
+        // Send the message over the network
         auto fullMsgP = std::make_shared<string>(fullMessage);
         boost::asio::async_write(ssl_socket, boost::asio::buffer(*fullMsgP), [fullMsgP, this](boost::system::error_code error, std::size_t) {
             if (error) {
@@ -88,10 +86,20 @@ void Peer::sendMessage(const string& message) {
             }
             });
 
+        // Open the file in append mode to keep adding new messages
+        std::ofstream myfile("chatlog.txt", std::ios::app);
+        if (!myfile.is_open()) {
+            throw std::runtime_error("Failed to open file for writing");
+        }
+
+        // Write the message to the file
+        myfile << fullMessage;
+
+        // Close the file
+        myfile.close();
 
     }
     catch (const std::exception& error) {
-        std::cerr << "Write failed: " << error.what() << endl;
-
+        std::cerr << "Write failed: " << error.what() << std::endl;
     }
 }
