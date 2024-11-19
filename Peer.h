@@ -1,24 +1,29 @@
 #pragma once
 #include "allheader.h"
 
-// Peer class handles the functionality of the host and client for P2P communication
+
+// The Peer class represents a peer in a network communication system, inheriting from std::enable_shared_from_this<Peer> to allow shared ownership of Peer objects.
+// This allows an object of type Peer to safely generate a shared_ptr to itself, which is useful when working with shared ownership in asynchronous code (like boost::asio).
 class Peer : public std::enable_shared_from_this<Peer> {
 public:
-    Peer(int& port, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx,string& name);
+    // Constructor for Peer class. It initializes a Peer object with port, IP, IO context, SSL context, and name.
+    Peer(int& port, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx, string& name);
 
+    // This method returns a reference to the SSL stream (which wraps a TCP socket) for secure communication.
     boost::asio::ssl::stream<boost::asio::ip::tcp::socket>& ssl_sock();
 
-    //void startConnection(string& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx);  // Host
-    //void connectToSender(string& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx);  // Client
-    void sendMessage(const string& message);
+    // This method sends a message to the peer. The message is passed by reference.
+    void sendMessage(string& message);
+
+    // This method is responsible for reading incoming messages asynchronously.
     void readMessage();
+
+    // This method handles the SSL handshake for secure communication (client or server side).
     void handleHandshake(boost::asio::ssl::stream_base::handshake_type htype);
 
-
 private:
-    int port; // Port number for connection
-    string name; // User's handle or name
-    streambuf buffer;
-    boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket;
-
+    int port;  // Port number to use for the network connection.
+    string name;  // Name or handle of the peer.
+    streambuf buffer;  // Buffer used for reading and writing data to/from the network.
+    boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket;  // SSL stream (wraps the TCP socket) for secure communication.
 };
