@@ -22,7 +22,7 @@ void Peer::readMessage() {
                 self->buffer.consume(len);  // Consume the bytes read from the buffer
                 self->readMessage();  // Continue reading more data asynchronously
             }
-            else if (error.message() == "An existing connection was forcibly closed by the remote host") {
+            else if (error.message() == "An existing connection was forcibly closed by the remote host") { // This error showed when a peer force closed the chat
                 // Handle the case where the connection was closed by the peer
                 cout << "Connection closed by peer! Thank you for using Chataway!\n\nExiting...";
                 exit(EXIT_SUCCESS);  // Exit the program gracefully
@@ -45,7 +45,6 @@ void Peer::sendMessage(string& message) {
         char output[50];  // Declare a buffer for the timestamp as a string
         struct tm datetime;  // Declare a tm struct (time structure) to hold the broken-down time info
 
-        
         time(&timestamp);// Get the current time
         localtime_s(&datetime, &timestamp);// Use localtime_s to get the local time in a thread-safe way
         strftime(output, sizeof(output), "%D %R", &datetime);// Format the time as a string
@@ -57,9 +56,9 @@ void Peer::sendMessage(string& message) {
         // Create a shared pointer 'fullMsgP' that holds a copy of the 'fullMessage' string.
         auto fullMsgP = std::make_shared<string>(fullMessage);
 
-        // Initiate an asynchronous write operation to send data over a secured connection (ssl_socket).The data to be sent is provided as a buffer, and 'fullMsgP' is passed by capture in the lambda.
+        // Async write operation sending data over a secured connection (ssl_socket).The message is sent as a buffer and 'fullMsgP' is passed in the lambda.
         boost::asio::async_write(ssl_socket, boost::asio::buffer(*fullMsgP),
-            // Lambda function that will be executed once the write operation is complete. It receives the 'error' code (if any) and the number of bytes written (which is ignored here).
+            // Lambda function that will be executed once the write operation is complete with error code if needed.
             [fullMsgP, this](boost::system::error_code error, std::size_t len) {
             if (error) {
                 cout << "Message not sent!" << error.message() << endl;

@@ -16,4 +16,3 @@ using namespace boost::asio;
 #include <chrono>
 #include <ctime>
 #include <fstream>
-#include <windows.h>
