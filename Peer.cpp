@@ -1,8 +1,8 @@
 #include "Peer.h"
-#include <mutex>
+#include "LogSave.h"
+
 // Constructor for the Peer class, initializing port, name and ssl_socket.
 Peer::Peer(int& port, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx, string& name) : port(port), name(name), ssl_socket(io_ctx, ssl_ctx) {};
-
 
 // This function returns the ssl_socket (SSL stream), which is a wrapper around the TCP socket.
 boost::asio::ssl::stream<boost::asio::ip::tcp::socket>& Peer::ssl_sock() {
@@ -72,25 +72,20 @@ void Peer::sendMessage(string& message) {
         // Create the full message
         string fullMessage = "||" + stringtime + "|| " + name + ": \n" + message + "\n\n\0";
 
-        // Send the message over the network
+        // Create a shared pointer 'fullMsgP' that holds a copy of the 'fullMessage' string.
         auto fullMsgP = std::make_shared<string>(fullMessage);
-        boost::asio::async_write(ssl_socket, boost::asio::buffer(*fullMsgP), [fullMsgP, this](boost::system::error_code error, std::size_t) {
+
+        // Initiate an asynchronous write operation to send data over a secured connection (ssl_socket).The data to be sent is provided as a buffer, and 'fullMsgP' is passed by capture in the lambda.
+        boost::asio::async_write(ssl_socket, boost::asio::buffer(*fullMsgP),
+            // Lambda function that will be executed once the write operation is complete. It receives the 'error' code (if any) and the number of bytes written (which is ignored here).
+            [fullMsgP, this](boost::system::error_code error, std::size_t len) {
             if (error) {
-                cout << "Halp! Message not sended!" << error.message() << endl;
+                cout << "Message not sent!" << error.message() << endl;
             }
             });
 
-        // Open the file in append mode to keep adding new messages
-        std::ofstream myfile("chatlog.txt", std::ios::app);
-        if (!myfile.is_open()) {
-            throw std::runtime_error("Failed to open file for writing"); //Error messsage if file doesn't open
-        }
-
-        // Write the message to the file
-        myfile << fullMessage;
-
-        // Close the file
-        myfile.close();
+        // Save timestamped message to log using saveToLog from LogSave.cpp.
+        saveToLog(fullMessage);
     }
     catch (const std::exception& error) {
         std::cerr << "Write failed: " << error.what() << std::endl;

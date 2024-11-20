@@ -129,11 +129,13 @@
   <ItemGroup>
     <ClCompile Include="chataway.cpp" />
     <ClCompile Include="Connections.cpp" />
+    <ClCompile Include="LogSave.cpp" />
     <ClCompile Include="Peer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="allheader.h" />
     <ClInclude Include="Connections.h" />
+    <ClInclude Include="LogSave.h" />
     <ClInclude Include="Peer.h" />
     <ClInclude Include="SSLConfig.h" />
   </ItemGroup>

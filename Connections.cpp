@@ -1,7 +1,6 @@
 #include "Connections.h"
 #include "Peer.h"
 
-
 // Function to start a connection as a server
 void startConnection(int& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
 
