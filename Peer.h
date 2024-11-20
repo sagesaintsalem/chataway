@@ -18,9 +18,6 @@ public:
     // This method is responsible for reading incoming messages asynchronously.
     void readMessage();
 
-    // This method handles the SSL handshake for secure communication (client or server side).
-    void handleHandshake(boost::asio::ssl::stream_base::handshake_type htype);
-
 private:
     int port;  // Port number to use for the network connection.
     string name;  // Name or handle of the peer.

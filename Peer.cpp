@@ -8,24 +8,6 @@ Peer::Peer(int& port, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx
 boost::asio::ssl::stream<boost::asio::ip::tcp::socket>& Peer::ssl_sock() {
     return ssl_socket;  // Return the SSL socket object.
 }
-
-// This function initiates the SSL handshake with the given handshake type (either client or server).
-void Peer::handleHandshake(boost::asio::ssl::stream_base::handshake_type htype) {
-    // Perform the async handshake. When the handshake is complete, the lambda function is called - self calls readMessage().
-    ssl_socket.async_handshake(htype, [self = shared_from_this()](const boost::system::error_code error) {
-        try {
-            if (!error) {  // If no error occurred during handshake
-                self->readMessage();  // Start reading messages after successful handshake
-            }
-            else {  // If handshake failed, print the error message
-                cout << "Handshake failed :(  Error: " << error.message() << endl;
-            }
-        }
-        catch (std::exception e) {  // Catch any exceptions that might occur and display the error message
-            cout << e.what() << endl;
-        }
-     });     
-    }
   
 // This function reads a message from the network stream asynchronously.
 void Peer::readMessage() {

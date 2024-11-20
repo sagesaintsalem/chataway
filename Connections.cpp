@@ -1,5 +1,22 @@
 #include "Connections.h"
-#include "Peer.h"
+
+// This function initiates the SSL handshake with the given handshake type (either client or server).
+void handleHandshake(std::shared_ptr<Peer> peer, boost::asio::ssl::stream_base::handshake_type htype) {
+    // Perform the async handshake. When the handshake is complete, the lambda function is called - self calls readMessage().
+    peer->ssl_sock().async_handshake(htype, [peer](const boost::system::error_code error) {
+        try {
+            if (!error) {  // If no error occurred during handshake
+                peer->readMessage();  // Start reading messages after successful handshake
+            }
+            else {  // If handshake failed, print the error message
+                cout << "Handshake failed :(  Error: " << error.message() << endl;
+            }
+        }
+        catch (std::exception e) {  // Catch any exceptions that might occur and display the error message
+            cout << e.what() << endl;
+        }
+        });
+}
 
 // Function to start a connection as a server
 void startConnection(int& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
@@ -22,7 +39,7 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
             }
             else {
                 // If connection succeeded, initiate SSL handshake as the server
-                host->handleHandshake(boost::asio::ssl::stream_base::handshake_type::server);
+                handleHandshake(host, boost::asio::ssl::stream_base::handshake_type::server);
                 cout << "Peer connected! Chat away!\n";  // Confirm successful peer connection
             }
         }
@@ -85,7 +102,7 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
         // Connect the SSL socket's underlying TCP layer to the server (specified by IP and port)
         client->ssl_sock().lowest_layer().connect(tcp::endpoint(ip::make_address(peer_ip), port));
         // After successful connection, initiate the SSL handshake as a client
-        client->handleHandshake(boost::asio::ssl::stream_base::handshake_type::client);
+        handleHandshake(client, boost::asio::ssl::stream_base::handshake_type::client);
         cout << "Connected to host! Chat away! \n";  // Output message confirming the connection
     }
     catch (const std::exception& error) {
