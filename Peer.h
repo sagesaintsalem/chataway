@@ -1,9 +1,7 @@
 #pragma once
 #include "allheader.h"
 
-
 // The Peer class represents a peer in a network communication system, inheriting from std::enable_shared_from_this<Peer> to allow shared ownership of Peer objects.
-// This allows an object of type Peer to safely generate a shared_ptr to itself, which is useful when working with shared ownership in asynchronous code (like boost::asio).
 class Peer : public std::enable_shared_from_this<Peer> {
 public:
     // Constructor for Peer class. It initializes a Peer object with port, IP, IO context, SSL context, and name.
@@ -15,7 +13,7 @@ public:
     // This method sends a message to the peer. The message is passed by reference.
     void sendMessage(string& message);
 
-    // This method is responsible for reading incoming messages asynchronously.
+    // This method is responsible for reading incoming messages.
     void readMessage();
 
 private:

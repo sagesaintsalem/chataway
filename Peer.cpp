@@ -31,7 +31,6 @@ void Peer::readMessage() {
                 cout << "Readstream failed: " << error.message() << endl;
             }
             });
-
     }
     catch (const std::exception& error) {  // Catch any exceptions that might occur during the read operation
         std::cerr << "Read failed: " << error.what() << endl;

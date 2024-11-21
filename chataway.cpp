@@ -3,8 +3,6 @@
 #include "Connections.h"
 
 
-
-
 void createPeer(string name, string peer_ip, int port, int hostOrClient) {
 	io_context io_ctx;
 	ssl::context ssl_ctx(ssl::context::tlsv12);
@@ -19,14 +17,13 @@ void createPeer(string name, string peer_ip, int port, int hostOrClient) {
 	}
 }
 
-
 int main() {
 
     cout << "--------------------\n\n";
     cout << "Welcome to Chataway!\n\n";
     cout << "--------------------\n\n";
 
-    /*int port;
+    int port;
     cout << "Enter port number: ";
     cin >> port;
     cin.ignore();
@@ -34,15 +31,7 @@ int main() {
     string peer_ip;
     cout << "Enter host IP address: ";
     cin >> peer_ip;
-    cin.ignore();*/
-
-    int port = 1337;  // Initialize the port number
-    string peer_ip = "127.0.0.1";  // Set the IP address 
-
-    // Display the current port number (1337)
-    cout << "Enter port number: " << port << endl;
-    // Display the current IP address (127.0.0.1)
-    cout << "Enter IP address: " << peer_ip << endl;
+    cin.ignore();
 
     string name;  // Declare a string variable to hold the user's name
     cout << "Please enter your name: ";  // Prompt the user to enter their name
@@ -70,7 +59,6 @@ int main() {
         std::cerr << "Choice invalid. Exiting.";  // Print an error message
         exit(EXIT_SUCCESS);  // Exit the program with a success status (indicating invalid choice)
     }
-
 
     return 0;
 }

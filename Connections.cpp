@@ -2,7 +2,7 @@
 
 // This function initiates the SSL handshake with the given handshake type (either client or server).
 void handleHandshake(std::shared_ptr<Peer> peer, boost::asio::ssl::stream_base::handshake_type htype) {
-    // Perform the async handshake. When the handshake is complete, the lambda function is called - self calls readMessage().
+    // Perform the async handshake. When the handshake is complete, the lambda function is called - peer calls readMessage().
     peer->ssl_sock().async_handshake(htype, [peer](const boost::system::error_code error) {
         try {
             if (!error) {  // If no error occurred during handshake
@@ -69,12 +69,12 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
             // Read the message typed by the user
             getline(cin, message);
 
-            // If the user types 'LEAVE_CHAT', exit the loop and stop the connection
+            // If the user types 'LEAVE_CHAT', stop io_ctx and io_thread then close the application.
             if (message == "LEAVE_CHAT") {
                 cout << "Thank you for using Chataway!\n\nExiting...";
                 io_ctx.stop();  // Stop the IO context to halt asynchronous operations
                 io_thread.join();  // Wait for the IO thread to finish
-                break;  // Break out of the loop
+                break;  // End application
             }
 
             // If the message is not empty, send it to the peer
@@ -99,7 +99,7 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
 
     // Try to connect to the server. If successful, initiate the SSL handshake as a client
     try {
-        // Connect the SSL socket's underlying TCP layer to the server (specified by IP and port)
+        // Connect the SSL socket's underlying TCP layer to the server, specified by IP and port
         client->ssl_sock().lowest_layer().connect(tcp::endpoint(ip::make_address(peer_ip), port));
         // After successful connection, initiate the SSL handshake as a client
         handleHandshake(client, boost::asio::ssl::stream_base::handshake_type::client);
@@ -129,12 +129,12 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
             // Read the message typed by the user
             getline(cin, message);
 
-            // If the user types 'LEAVE_CHAT', exit the loop and stop the connection
+            // If the user types 'LEAVE_CHAT', stop io_ctx and io_thread then close the application.
             if (message == "LEAVE_CHAT") {
                 cout << "Thank you for using Chataway!\n\nExiting...";
                 io_ctx.stop();  // Stop the IO context to halt asynchronous operations
                 io_thread.join();  // Wait for the IO thread to finish
-                break;  // Break out of the loop
+                break;  // End application
             }
 
             // If the message is not empty, send it to the server
