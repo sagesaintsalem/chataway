@@ -2,7 +2,7 @@
 #include "LogSave.h"
 
 // Constructor for the Peer class, initializing port, name and ssl_socket.
-Peer::Peer(int& port, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx, string& name) : port(port), name(name), ssl_socket(io_ctx, ssl_ctx) {};
+Peer::Peer(io_context& io_ctx, ssl::context& ssl_ctx, string& name) : name(name), ssl_socket(io_ctx, ssl_ctx) {};
 
 // This function returns the ssl_socket (SSL stream), which is a wrapper around the TCP socket.
 boost::asio::ssl::stream<boost::asio::ip::tcp::socket>& Peer::ssl_sock() {

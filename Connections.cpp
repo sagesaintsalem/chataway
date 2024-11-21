@@ -22,7 +22,7 @@ void handleHandshake(std::shared_ptr<Peer> peer, boost::asio::ssl::stream_base::
 void startConnection(int& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
 
     // Create a shared pointer to a Peer object, passing the port, IP, SSL context, and name for initialization
-    auto host = std::make_shared<Peer>(port, peer_ip, io_ctx, ssl_ctx, name);
+    auto host = std::make_shared<Peer>(io_ctx, ssl_ctx, name);
 
     // Create a TCP acceptor that listens for incoming connections on the specified IP and port
     tcp::acceptor acceptor(io_ctx, tcp::endpoint(ip::make_address(peer_ip), port));
@@ -30,7 +30,7 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
     // Output message indicating that the server is waiting for a peer to connect
     cout << "Waiting for peer on port " << port << "...\n";
 
-    // Start accepting a connection asynchronously. If a connection is accepted, it triggers the provided lambda function
+    // Start accepting a connection asynchronously. If a connection is accepted, it triggers handleHandshake().
     acceptor.async_accept(host->ssl_sock().lowest_layer(), [&host](const boost::system::error_code& error) {
         try {
             // If an error occurred during the connection attempt, print the error message
@@ -51,7 +51,7 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
     // Start a separate thread to run the IO context. This is required for asynchronous operations.
     std::thread io_thread([&io_ctx]() {
         try {
-            // Run the IO context, which processes asynchronous events
+            // Run the IO context, which processes asynchronous events like readMessage and sendMessage
             io_ctx.run();
         }
         catch (const std::exception& e) {
@@ -93,7 +93,7 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
 // Function to connect to a server as a client
 void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ctx, ssl::context& ssl_ctx) {
     // Create a shared pointer to a Peer object, passing the port, IP, SSL context, and name for initialization
-    auto client = std::make_shared<Peer>(port, peer_ip, io_ctx, ssl_ctx, name);
+    auto client = std::make_shared<Peer>(io_ctx, ssl_ctx, name);
 
     cout << "Connecting...\n";  // Output message indicating that the client is trying to connect
 
