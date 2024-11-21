@@ -1,4 +1,5 @@
 #include "Connections.h"
+#include "PeersOnline.h"
 
 // This function initiates the SSL handshake with the given handshake type (either client or server).
 void handleHandshake(std::shared_ptr<Peer> peer, boost::asio::ssl::stream_base::handshake_type htype) {
@@ -74,6 +75,7 @@ void startConnection(int& port, string& name, string& peer_ip, io_context& io_ct
                 cout << "Thank you for using Chataway!\n\nExiting...";
                 io_ctx.stop();  // Stop the IO context to halt asynchronous operations
                 io_thread.join();  // Wait for the IO thread to finish
+                clearPeer();
                 break;  // End application
             }
 
@@ -134,6 +136,7 @@ void connectToSender(int& port, string& name, string& peer_ip, io_context& io_ct
                 cout << "Thank you for using Chataway!\n\nExiting...";
                 io_ctx.stop();  // Stop the IO context to halt asynchronous operations
                 io_thread.join();  // Wait for the IO thread to finish
+                clearPeer();
                 break;  // End application
             }
 

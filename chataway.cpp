@@ -1,6 +1,7 @@
 #include "Peer.h"
 #include "SSLConfig.h"
 #include "Connections.h"
+#include "PeersOnline.h"
 
 
 void createPeer(string name, string peer_ip, int port, int hostOrClient) {
@@ -38,10 +39,22 @@ int main() {
     cin >> name;  // Read the user's input for their name
     cin.ignore();  // Ignore any leftover newline characters in the input buffer (to avoid issues with further input)
 
+    loadPeerCount();
+    if (connected_peers > 1){
+        cout << "Hi " << name << "! There are " << connected_peers << " peers currently online!\n";
+    }
+    else if (connected_peers == 1) {
+        cout << "Hi " << name << "! There is " << connected_peers << " peer currently online!\n";
+    }
+    else {
+        cout << "Hi " << name << "! Nobody else online yet..." << "\n";
+    }
+
     // Declare an integer to store the user's choice (host or client)
     int hostOrClient;
-    cout << "Hi " << name << "! Please select:\n1. Host chat\n2. Join chat\n";
     // Prompt the user to choose between hosting a chat or joining an existing chat
+    cout<<"Please select : \n1.Host chat\n2.Join chat\n";
+    
     cin >> hostOrClient;  // Read the user's choice (1 for host, 2 for client)
     cin.ignore();  // Again, ignore any leftover newline characters in the input buffer
 
@@ -52,6 +65,7 @@ int main() {
     }
     // If the choice is valid (1 or 2), proceed to create a Peer object and start the connection
     else if (hostOrClient == 1 || hostOrClient == 2) {
+        addPeer();
         createPeer(name, peer_ip, port, hostOrClient);  // Call the createPeer function with the given parameters
     }
     // If the choice is not valid (anything other than 1 or 2), print an error message

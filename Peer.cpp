@@ -46,7 +46,7 @@ void Peer::sendMessage(string& message) {
 
         time(&timestamp);// Get the current time
         localtime_s(&datetime, &timestamp);// Use localtime_s to get the local time in a thread-safe way
-        strftime(output, sizeof(output), "%D %R", &datetime);// Format the time as a string
+        strftime(output, sizeof(output), " %d/%m/%y %R ", &datetime);// Format the time as a string
         auto stringtime = std::string(output);// Convert to a C++ string
 
         // Create the full message

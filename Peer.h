@@ -16,8 +16,12 @@ public:
     // This method is responsible for reading incoming messages.
     void readMessage();
 
+    
+
 private:
     string name;  // Name or handle of the peer.
     streambuf buffer;  // Buffer used for reading and writing data to/from the network.
     boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket;  // SSL stream (wraps the TCP socket) for secure communication.
+    
+
 };

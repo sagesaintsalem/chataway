@@ -27,6 +27,9 @@
     <ClCompile Include="LogSave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PeersOnline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="allheader.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LogSave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PeersOnline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

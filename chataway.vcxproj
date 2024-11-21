@@ -131,12 +131,14 @@
     <ClCompile Include="Connections.cpp" />
     <ClCompile Include="LogSave.cpp" />
     <ClCompile Include="Peer.cpp" />
+    <ClCompile Include="PeersOnline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="allheader.h" />
     <ClInclude Include="Connections.h" />
     <ClInclude Include="LogSave.h" />
     <ClInclude Include="Peer.h" />
+    <ClInclude Include="PeersOnline.h" />
     <ClInclude Include="SSLConfig.h" />
   </ItemGroup>
   <ItemGroup>
